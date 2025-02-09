@@ -1,5 +1,8 @@
 # reproducible-cross-validation
-The repo measured the variation of Random Forest (Catboost) results with respected to changed in 
+The repo measured the variation of Random Forest (Catboost) results with respected to changed in Catboost
+random seed, random data shuffle, and cross-validation random seed.
+
+See discussion in [the post](https://ilya0.substack.com/p/reproducibility-and-hidden-choices)
 
 # Run
 
