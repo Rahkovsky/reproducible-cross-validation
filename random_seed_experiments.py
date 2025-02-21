@@ -32,8 +32,11 @@ def download_kaggle_data(download_path: str) -> None:
         zip_ref.extractall(download_path)
 
 
-def load_data(download_path: str) -> Tuple[pd.DataFrame, List[str], List[str], List[str]]:
+def load_data(download_path: str, sample_size:int|None) -> Tuple[pd.DataFrame, List[str], List[str], List[str]]:
     df = pd.read_csv(f"{download_path}/train.csv")
+    assert (sample_size < 188_000) or (sample_size is None), "Sample size should be less than 188K"
+    if sample_size is not None:
+        df = df.sample(sample_size)
     cat_features = [c for c in df.columns if c.startswith('cat')]
     cont_features = [c for c in df.columns if c.startswith('cont')]
     feature_names = cat_features + cont_features
@@ -92,6 +95,8 @@ def cli_args()-> Namespace:
                         default=False,
                         action='store_true')
     parser.add_argument("--g-count", help="Maximum number cv-run", type=int, default=3)
+    parser.add_argument("--sample-size", help="Random sampling for small-sample experiments, use a number less than 188K",
+                        type=int, default=None)
     parser.add_argument("--cv-folds", help="Number of cross-validation folds", type=int, default=5)
     parser.add_argument("--output-file", help="name of the output file", type=str)
     return parser.parse_args()
@@ -111,7 +116,7 @@ if __name__ == "__main__":
     if args.download:
         download_kaggle_data(download_path)
         logger.info("Data downloaded successfully.")
-    df, cat_features, cont_features, feature_names = load_data(download_path)
+    df, cat_features, cont_features, feature_names = load_data(download_path, args.sample_size)
 
 
     rmse_results = np.array([])

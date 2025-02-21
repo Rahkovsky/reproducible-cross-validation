@@ -65,9 +65,20 @@ files_label_dict = {
     "shuffle_random__g_100.csv": "Shuffle",
 }
 
+files_10K_sample = {
+"cb_cv_shuffle__random__g_100__10K_sample.csv": "CatBoost + Cross Validation + Shuffle + 10K sample",
+"cb_random__g_100__10K_sample.csv": "CatBoost + 10K sample",
+"cb_shuffle__random__g_100__10K_sample.csv": "CatBoost + Shuffle + 10K sample",
+"cv_cb__random__g_100__10K_sample.csv": "CatBoost + Cross Validation + 10K sample",
+"cv_random__g_100__10K_sample.csv": "Cross Validation + 10K sample",
+"cv_shuffle__random__g_100__10K_sample.csv": "Cross Validation + Shuffle + 10K sample",
+"shuffle_random__g_100__10K_sample.csv": "Shuffle + 10K sample",
+}
+
+
 if __name__ == "__main__":
     os.makedirs("graphs", exist_ok=True)
-    for file, label in files_label_dict.items():
+    for file, label in (files_label_dict | files_10K_sample).items():
         df = pd.read_csv(f"results/{file}", header=None, names=["g_iteration", "MSE"])
         avg_mse = df["MSE"].mean()  # Compute average MSE for a model
         cumulative_variances, threshold_percentage, y_max = get_thresholds(avg_mse, z_1_beta_2)
